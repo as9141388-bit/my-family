@@ -1,347 +1,36 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html lang="ur" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="Ismaili Family Foundation - Private Family Support Platform" />
-  <title>Ismaili Family Foundation | اسماعیلی فیملی فاؤنڈیشن</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' },
-            accent: { 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' }
-          },
-          fontFamily: {
-            sans: ['Inter', 'Noto Nastaliq Urdu', 'system-ui', 'sans-serif'],
-            urdu: ['Noto Nastaliq Urdu', 'serif']
-          }
-        }
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ismaili Family Foundation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased">
-  <!-- Loading overlay -->
-  <div id="loading" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center hidden">
-    <div class="flex flex-col items-center gap-3">
-      <div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-primary-700 font-medium">Loading...</p>
-    </div>
-  </div>
+<body class="bg-teal-900 flex items-center justify-center min-h-screen p-4">
 
-  <!-- Toast -->
-  <div id="toast" class="fixed top-4 right-4 z-[60] hidden max-w-sm"></div>
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-teal-800 mb-1">Ismaili Family Foundation</h1>
+        <h2 class="text-xl font-semibold text-teal-600 mb-2">اسماعیلی فیملی فاؤنڈیشن</h2>
+        <p class="text-gray-500 text-sm mb-6">Private Family Support Platform</p>
 
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-700 via-primary-800 to-accent-700">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/15 backdrop-blur mb-4 shadow-lg">
-          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        </div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white">Ismaili Family Foundation</h1>
-        <p class="text-primary-100 mt-1 font-urdu text-lg" dir="rtl">اسماعیلی فیملی فاؤنڈیشن</p>
-        <p class="text-primary-200 text-sm mt-2">Private Family Support Platform</p>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
-        <div class="flex justify-center gap-2 mb-6">
-          <button type="button" id="lang-en" class="px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">English</button>
-          <button type="button" id="lang-ur" class="px-3 py-1 rounded-full text-sm font-medium text-slate-500 hover:bg-slate-100">اردو</button>
-        </div>
-
-        <form id="login-form" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="username">Username / Email</label>
-            <input type="text" id="login-username" required autocomplete="username"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition"
-              placeholder="admin" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="password">Password</label>
-            <input type="password" id="login-password" required autocomplete="current-password"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition"
-              placeholder="••••••••" />
-          </div>
-          <button type="submit" id="login-btn"
-            class="w-full py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg shadow-primary-200 transition active:scale-[0.98]">
-            <span data-i18n="login">Secure Family Access</span>
-          </button>
-        </form>
-        <p class="text-xs text-center text-slate-400 mt-6" data-i18n="private_notice">This is a private family-only platform. Unauthorized access is prohibited.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- APP SHELL -->
-  <div id="app" class="hidden min-h-screen flex flex-col">
-    <!-- Top Nav -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-      <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <button id="menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-slate-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
-          <div>
-            <h1 class="font-bold text-primary-800 text-sm sm:text-base leading-tight">Ismaili Family Foundation</h1>
-            <p class="text-[10px] text-slate-400 font-urdu" dir="rtl">اسماعیلی فیملی فاؤنڈیشن</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="lang-toggle" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium">EN / اردو</button>
-          <div class="hidden sm:flex items-center gap-2 text-sm">
-            <span id="user-display" class="font-medium text-slate-700"></span>
-            <span id="role-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase"></span>
-          </div>
-          <button id="logout-btn" class="p-2 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-600" title="Logout">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <div class="flex flex-1 max-w-6xl mx-auto w-full">
-      <!-- Sidebar -->
-      <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform pt-14 lg:pt-0">
-        <nav class="p-3 space-y-1">
-          <a href="#dashboard" data-page="dashboard" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <span data-i18n="nav_dashboard">Dashboard</span>
-          </a>
-          <a href="#members" data-page="members" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span data-i18n="nav_members">Family Members</span>
-          </a>
-          <a href="#transfer" data-page="transfer" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            <span data-i18n="nav_transfer">Transfer Money</span>
-          </a>
-          <a href="#history" data-page="history" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span data-i18n="nav_history">Transaction History</span>
-          </a>
-          <a href="#payments" data-page="payments" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-            <span data-i18n="nav_payments">Payment Methods</span>
-          </a>
-          <a href="#admin" data-page="admin" id="nav-admin" class="nav-link hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary-50 hover:text-primary-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span data-i18n="nav_admin">Admin Panel</span>
-          </a>
-        </nav>
-      </aside>
-      <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-20 hidden lg:hidden"></div>
-
-      <!-- Main content -->
-      <main class="flex-1 p-4 sm:p-6 overflow-x-hidden">
-        <!-- DASHBOARD -->
-        <section id="page-dashboard" class="page hidden space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <form action="dashboard.html" method="GET" class="space-y-4 text-right">
             <div>
-              <h2 class="text-xl font-bold text-slate-800" data-i18n="dashboard_title">Family Dashboard</h2>
-              <p class="text-sm text-slate-500" data-i18n="dashboard_sub">Overview of family fund & activity</p>
+                <label class="block text-gray-700 text-sm font-bold mb-1">Email / Username</label>
+                <input type="email" value="as9141388@gmail.com" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
             </div>
-            <a href="#transfer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 text-white font-semibold text-sm shadow-md hover:bg-primary-700 transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-              <span data-i18n="send_money">Send Money</span>
-            </a>
-          </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-5 text-white shadow-lg">
-              <p class="text-primary-100 text-sm font-medium" data-i18n="total_fund">Total Family Fund</p>
-              <p id="fund-balance" class="text-3xl font-bold mt-1 tracking-tight">Rs 0</p>
-              <p class="text-primary-200 text-xs mt-2" id="fund-updated"></p>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-1">Password</label>
+                <input type="password" placeholder="پاسورڈ درج کریں" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
             </div>
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-              <p class="text-slate-500 text-sm font-medium" data-i18n="pending_requests">Pending Requests</p>
-              <p id="pending-count" class="text-3xl font-bold text-amber-600 mt-1">0</p>
-            </div>
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-              <p class="text-slate-500 text-sm font-medium" data-i18n="active_members">Active Members</p>
-              <p id="members-count" class="text-3xl font-bold text-primary-700 mt-1">0</p>
-            </div>
-          </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-              <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="font-semibold text-slate-800" data-i18n="recent_tx">Recent Transactions</h3>
-                <a href="#history" class="text-xs text-primary-600 font-medium" data-i18n="view_all">View all</a>
-              </div>
-              <div id="recent-tx-list" class="divide-y divide-slate-50 max-h-80 overflow-y-auto"></div>
-            </div>
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-              <div class="px-5 py-4 border-b border-slate-100">
-                <h3 class="font-semibold text-slate-800" data-i18n="family_members_short">Family Members</h3>
-              </div>
-              <div id="dash-members-list" class="divide-y divide-slate-50 max-h-80 overflow-y-auto"></div>
-            </div>
-          </div>
+            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 color-white text-white font-bold py-3 rounded-lg transition duration-200 shadow-md">
+                Secure Family Access
+            </button>
+        </form>
 
-          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-            <strong data-i18n="notice_title">Important:</strong>
-            <span data-i18n="notice_text"> This platform records internal family transfers only. Actual money movement is done manually via Easypaisa, JazzCash or Bank Transfer listed under Payment Methods.</span>
-          </div>
-        </section>
-
-        <!-- MEMBERS -->
-        <section id="page-members" class="page hidden space-y-6">
-          <h2 class="text-xl font-bold text-slate-800" data-i18n="members_title">Family Members</h2>
-          <div id="members-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </section>
-
-        <!-- TRANSFER -->
-        <section id="page-transfer" class="page hidden space-y-6">
-          <h2 class="text-xl font-bold text-slate-800" data-i18n="transfer_title">Transfer Money</h2>
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 max-w-lg">
-            <form id="transfer-form" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="select_member">Select Family Member</label>
-                <select id="transfer-to" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
-                  <option value="" data-i18n="choose_member">Choose member...</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="amount_pkr">Amount (PKR)</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rs</span>
-                  <input type="number" id="transfer-amount" min="1" step="1" required
-                    class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                    placeholder="0" />
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="reason">Transfer Reason</label>
-                <input type="text" id="transfer-reason" required maxlength="120"
-                  class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                  placeholder="e.g. Education support / تعلیم کے لیے" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1" data-i18n="note_optional">Optional Note</label>
-                <textarea id="transfer-note" rows="2" maxlength="300"
-                  class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
-                  placeholder=""></textarea>
-              </div>
-              <button type="submit" class="w-full py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-md transition">
-                <span data-i18n="submit_request">Submit Transfer Request</span>
-              </button>
-            </form>
-            <p class="text-xs text-slate-400 mt-4" data-i18n="transfer_note_info">Requests require admin approval. Funds are recorded in the family ledger only.</p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold text-slate-800 mb-3" data-i18n="my_requests">My Transfer Requests</h3>
-            <div id="my-requests-list" class="space-y-3"></div>
-          </div>
-        </section>
-
-        <!-- HISTORY -->
-        <section id="page-history" class="page hidden space-y-6">
-          <h2 class="text-xl font-bold text-slate-800" data-i18n="history_title">Transaction History</h2>
-          <div id="history-list" class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-50"></div>
-        </section>
-
-        <!-- PAYMENTS -->
-        <section id="page-payments" class="page hidden space-y-6">
-          <h2 class="text-xl font-bold text-slate-800" data-i18n="payments_title">Payment Methods</h2>
-          <p class="text-sm text-slate-500" data-i18n="payments_sub">Use these details for actual money transfers. Details are managed by Admin.</p>
-          <div id="payment-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-        </section>
-
-        <!-- ADMIN -->
-        <section id="page-admin" class="page hidden space-y-8">
-          <h2 class="text-xl font-bold text-slate-800" data-i18n="admin_title">Family Admin Panel</h2>
-
-          <!-- Pending Approvals -->
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-5 py-4 border-b border-slate-100 bg-amber-50">
-              <h3 class="font-semibold text-amber-900" data-i18n="pending_approvals">Pending Transfer Approvals</h3>
-            </div>
-            <div id="admin-pending-list" class="divide-y divide-slate-50"></div>
-          </div>
-
-          <!-- Payment Methods Editor -->
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
-            <h3 class="font-semibold text-slate-800 mb-4" data-i18n="edit_payments">Edit Payment Methods</h3>
-            <form id="payments-form" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-3 p-4 rounded-xl bg-green-50 border border-green-100">
-                  <h4 class="font-medium text-green-800">Easypaisa</h4>
-                  <input type="text" id="ep-number" placeholder="Mobile number" class="w-full px-3 py-2 rounded-lg border border-green-200 text-sm" />
-                  <input type="text" id="ep-name" placeholder="Account name" class="w-full px-3 py-2 rounded-lg border border-green-200 text-sm" />
-                </div>
-                <div class="space-y-3 p-4 rounded-xl bg-red-50 border border-red-100">
-                  <h4 class="font-medium text-red-800">JazzCash</h4>
-                  <input type="text" id="jc-number" placeholder="Mobile number" class="w-full px-3 py-2 rounded-lg border border-red-200 text-sm" />
-                  <input type="text" id="jc-name" placeholder="Account name" class="w-full px-3 py-2 rounded-lg border border-red-200 text-sm" />
-                </div>
-              </div>
-              <div class="space-y-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
-                <h4 class="font-medium text-blue-800">Bank Account</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="text" id="bank-name" placeholder="Bank name" class="px-3 py-2 rounded-lg border border-blue-200 text-sm" />
-                  <input type="text" id="bank-title" placeholder="Account title" class="px-3 py-2 rounded-lg border border-blue-200 text-sm" />
-                  <input type="text" id="bank-number" placeholder="Account number" class="px-3 py-2 rounded-lg border border-blue-200 text-sm" />
-                  <input type="text" id="bank-iban" placeholder="IBAN" class="px-3 py-2 rounded-lg border border-blue-200 text-sm" />
-                </div>
-              </div>
-              <button type="submit" class="px-5 py-2.5 rounded-xl bg-primary-600 text-white font-medium text-sm hover:bg-primary-700">Save Payment Methods</button>
-            </form>
-          </div>
-
-          <!-- Add Member -->
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6">
-            <h3 class="font-semibold text-slate-800 mb-4" data-i18n="add_member">Add Family Member</h3>
-            <form id="add-member-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input type="text" id="am-username" required placeholder="Username" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="email" id="am-email" placeholder="Email" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="password" id="am-password" required placeholder="Password (min 6)" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="text" id="am-fullname" required placeholder="Full Name (English)" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="text" id="am-fullname-ur" placeholder="Full Name (Urdu)" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" dir="rtl" />
-              <input type="text" id="am-phone" placeholder="Phone" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="text" id="am-relation" placeholder="Relation (e.g. Son)" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="text" id="am-relation-ur" placeholder="رشتہ (اردو)" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm" dir="rtl" />
-              <div class="sm:col-span-2">
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-primary-600 text-white font-medium text-sm hover:bg-primary-700">Add Member</button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Manage Members -->
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-5 py-4 border-b border-slate-100">
-              <h3 class="font-semibold text-slate-800" data-i18n="manage_members">Manage Members</h3>
-            </div>
-            <div id="admin-members-list" class="divide-y divide-slate-50"></div>
-          </div>
-
-          <!-- Fund Adjustment -->
-          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 max-w-md">
-            <h3 class="font-semibold text-slate-800 mb-4" data-i18n="adjust_fund">Adjust Family Fund</h3>
-            <form id="fund-form" class="space-y-3">
-              <select id="fund-type" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm">
-                <option value="credit">Credit (Add)</option>
-                <option value="debit">Debit (Subtract)</option>
-              </select>
-              <input type="number" id="fund-amount" min="1" required placeholder="Amount PKR" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <input type="text" id="fund-note" placeholder="Note / Reason" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm" />
-              <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-800 text-white font-medium text-sm hover:bg-slate-900">Update Fund</button>
-            </form>
-          </div>
-        </section>
-      </main>
+        <p class="text-xs text-gray-400 mt-6">This is a private family-only platform. Unauthorized access is prohibited.</p>
     </div>
-  </div>
 
-  <script src="/js/i18n.js"></script>
-  <script src="/js/app.js"></script>
 </body>
 </html>
