@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ismaili Family Foundation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#f0fdfa', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen">
 
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-slate-800">اسماعیلی فیملی فاؤنڈیشن</h1>
+        <p class="text-sm text-slate-500 mt-1">محفوظ فیملی پورٹل میں لاگ ان کریں</p>
+      </div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">یوزر نیم (Username)</label>
+          <input type="text" id="login-username" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm" placeholder="admin">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">پاس ورڈ (Password)</label>
+          <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm" placeholder="password">
+        </div>
+        <button type="submit" class="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all shadow-md">
+          لاگ ان کریں
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP SCREEN -->
+  <div id="app" class="hidden min-h-screen flex flex-col md:flex-row">
+    <!-- Sidebar / Nav -->
+    <aside id="sidebar" class="w-full md:w-64 bg-white border-l border-slate-200 flex-shrink-0">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h2 class="font-bold text-slate-800 text-lg">فیملی پورٹل</h2>
+          <span id="role-badge" class="mt-1 inline-block"></span>
+        </div>
+      </div>
+      <nav class="p-4 space-y-2">
+        <a href="#dashboard" data-page="dashboard" class="nav-link block px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-100">ڈیش بورڈ</a>
+        <a href="#members" data-page="members" class="nav-link block px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-100">فیملی ممبرز</a>
+        <a href="#payments" data-page="payments" class="nav-link block px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-100">ادائیگی کے طریقے</a>
+      </nav>
+      <div class="p-4 border-t border-slate-100 mt-auto">
+        <button id="logout-btn" class="w-full text-right px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg">لاگ آؤٹ</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-10">
+      <!-- DASHBOARD PAGE -->
+      <section id="page-dashboard" class="page space-y-6">
+        <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-3xl p-6 text-white shadow-lg">
+          <p class="text-xs opacity-80">کل فیملی فنڈ</p>
+          <h3 id="fund-balance" class="text-3xl font-extrabold mt-1">Rs 0</h3>
+          <p id="fund-updated" class="text-[10px] opacity-70 mt-2"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <p class="text-xs text-slate-400">ممبرز</p>
+            <p id="members-count" class="text-xl font-bold text-slate-800">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <p class="text-xs text-slate-400">درخواستیں</p>
+            <p id="pending-count" class="text-xl font-bold text-slate-800">0</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-100 font-bold text-sm">حالیہ ٹرانزیکشنز</div>
+          <div id="recent-tx-list"></div>
+        </div>
+      </section>
+
+      <!-- MEMBERS PAGE -->
+      <section id="page-members" class="page hidden space-y-6">
+        <h3 class="text-xl font-bold text-slate-800">فیملی ممبرز</h3>
+        <div id="members-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </section>
+
+      <!-- PAYMENTS PAGE -->
+      <section id="page-payments" class="page hidden space-y-6">
+        <h3 class="text-xl font-bold text-slate-800">ادائیگی کی تفصیلات</h3>
+        <div id="payment-cards" class="space-y-4"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
