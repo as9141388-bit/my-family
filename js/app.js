@@ -1,23 +1,14 @@
-// Data Models & Initial State
+// Initial Data Model (All reset to zero / clear for admin entry)
 const DEFAULT_DATA = {
-  fundBalance: 1545000,
-  lastUpdated: '2026-08-30',
-  members: [
-    { id: 1, name: 'عمران خان', role: 'فیملی ہیڈ', phone: '0300-1234567', status: 'فعال' },
-    { id: 2, name: 'سارہ احمد', role: 'ممبر', phone: '0321-7654321', status: 'فعال' },
-    { id: 3, name: 'علی رضا', role: 'ممبر', phone: '0333-9876543', status: 'فعال' }
-  ],
-  transactions: [
-    { id: 101, member: 'عمران خان', amount: 50000, date: '2026-08-25', status: 'منظور شدہ', type: 'جمع' },
-    { id: 102, member: 'سارہ احمد', amount: 20000, date: '2026-08-20', status: 'منظور شدہ', type: 'جمع' }
-  ],
-  payments: [
-    { type: 'بینک ٹرانسفر', title: 'HBL Bank', detail: 'Account: 1234-567890123-01 (Title: Ismaili Family Fund)' },
-    { type: 'ایزی پیسہ / جاز کیش', title: 'EasyPaisa / JazzCash', detail: 'Mobile: 0300-1234567' }
-  ]
+  fundBalance: 0,
+  totalReceived: 0,
+  totalPending: 0,
+  totalSpent: 0,
+  lastUpdated: new Date().toISOString().split('T')[0],
+  members: [],
+  transactions: []
 };
 
-// Application State Manager
 class AppState {
   constructor() {
     this.currentUser = JSON.parse(sessionStorage.getItem('family_user')) || null;
@@ -27,13 +18,36 @@ class AppState {
 
   saveData() {
     localStorage.setItem('family_portal_data', JSON.stringify(this.data));
+    this.recalculateTotals();
+    this.render();
+  }
+
+  recalculateTotals() {
+    let received = 0;
+    let pending = 0;
+    let spent = 0;
+
+    this.data.transactions.forEach(tx => {
+      const amt = parseFloat(tx.amount) || 0;
+      if (tx.type === 'expense') {
+        spent += amt;
+      } else if (tx.status === 'approved') {
+        received += amt;
+      } else if (tx.status === 'pending') {
+        pending += amt;
+      }
+    });
+
+    this.data.totalReceived = received;
+    this.data.totalPending = pending;
+    this.data.totalSpent = spent;
+    this.data.fundBalance = received - spent;
   }
 
   login(username, password) {
     const cleanUser = username.trim().toLowerCase();
     const cleanPass = password.trim();
 
-    // Accept admin/password OR user/password
     if ((cleanUser === 'admin' || cleanUser === 'user') && cleanPass === 'password') {
       this.currentUser = {
         username: cleanUser,
@@ -52,7 +66,38 @@ class AppState {
     this.render();
   }
 
+  addMember(name, role, phone) {
+    const newMember = {
+      id: Date.now(),
+      name,
+      role,
+      phone,
+      status: 'فعال'
+    };
+    this.data.members.push(newMember);
+    this.saveData();
+  }
+
+  removeMember(id) {
+    this.data.members = this.data.members.filter(m => m.id !== id);
+    this.saveData();
+  }
+
+  addTransaction(memberName, amount, type, status, date) {
+    const newTx = {
+      id: Date.now(),
+      member: memberName,
+      amount: parseFloat(amount),
+      type, // 'income' or 'expense'
+      status, // 'approved' or 'pending'
+      date: date || new Date().toISOString().split('T')[0]
+    };
+    this.data.transactions.push(newTx);
+    this.saveData();
+  }
+
   init() {
+    this.recalculateTotals();
     this.bindEvents();
     this.render();
     window.addEventListener('hashchange', () => this.handleRouting());
@@ -69,7 +114,7 @@ class AppState {
           this.render();
           window.location.hash = 'dashboard';
         } else {
-          alert('غلط یوزر نیم یا پاس ورڈ! آزمائش کے لیے admin اور password استعمال کریں۔');
+          alert('غلط یوزر نیم یا پاس ورڈ!');
         }
       });
     }
@@ -114,60 +159,61 @@ class AppState {
 
       this.renderDashboard();
       this.renderMembers();
-      this.renderPayments();
       this.handleRouting();
     }
   }
 
   renderDashboard() {
-    const fundBal = document.getElementById('fund-balance');
-    if (fundBal) fundBal.textContent = `Rs ${this.data.fundBalance.toLocaleString()}`;
-    
-    const fundUp = document.getElementById('fund-updated');
-    if (fundUp) fundUp.textContent = `آخری اپڈیٹ: ${this.data.lastUpdated}`;
+    // Balances
+    document.getElementById('fund-balance').textContent = `Rs ${this.data.fundBalance.toLocaleString()}`;
+    document.getElementById('total-received').textContent = `Rs ${this.data.totalReceived.toLocaleString()}`;
+    document.getElementById('total-pending').textContent = `Rs ${this.data.totalPending.toLocaleString()}`;
+    document.getElementById('total-spent').textContent = `Rs ${this.data.totalSpent.toLocaleString()}`;
 
+    // Members Count
     const memCount = document.getElementById('members-count');
     if (memCount) memCount.textContent = this.data.members.length;
 
+    // Transaction History Table
     const txList = document.getElementById('recent-tx-list');
     if (txList) {
-      txList.innerHTML = this.data.transactions.map(tx => `
-        <div class="p-4 border-b border-slate-50 flex justify-between items-center text-xs">
-          <div>
-            <p class="font-bold text-slate-700">${tx.member}</p>
-            <p class="text-slate-400 mt-0.5">${tx.date}</p>
+      if (this.data.transactions.length === 0) {
+        txList.innerHTML = `<p class="p-4 text-xs text-slate-400 text-center">کوئی ہسٹری موجود نہیں ہے۔</p>`;
+      } else {
+        txList.innerHTML = this.data.transactions.map(tx => `
+          <div class="p-4 border-b border-slate-50 flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-slate-700">${tx.member} (${tx.type === 'expense' ? 'خرچ' : 'جمع'})</p>
+              <p class="text-slate-400 mt-0.5">${tx.date} • <span class="${tx.status === 'approved' ? 'text-emerald-600' : 'text-amber-600'}">${tx.status === 'approved' ? 'منظور شدہ' : 'پینڈنگ'}</span></p>
+            </div>
+            <span class="font-bold ${tx.type === 'expense' ? 'text-red-500' : 'text-emerald-600'}">
+              ${tx.type === 'expense' ? '-' : '+'}Rs ${tx.amount.toLocaleString()}
+            </span>
           </div>
-          <span class="font-bold text-emerald-600">+Rs ${tx.amount.toLocaleString()}</span>
-        </div>
-      `).join('');
+        `).join('');
+      }
     }
   }
 
   renderMembers() {
     const grid = document.getElementById('members-grid');
     if (grid) {
-      grid.innerHTML = this.data.members.map(m => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
-          <div>
-            <h4 class="font-bold text-slate-800 text-sm">${m.name}</h4>
-            <p class="text-xs text-slate-400 mt-0.5">${m.role} • ${m.phone}</p>
+      if (this.data.members.length === 0) {
+        grid.innerHTML = `<p class="col-span-2 text-xs text-slate-400 text-center py-4">کوئی فیملی ممبر موجود نہیں ہے۔ اوپر سے نیا ممبر شامل کریں۔</p>`;
+      } else {
+        grid.innerHTML = this.data.members.map(m => `
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm">${m.name}</h4>
+              <p class="text-xs text-slate-400 mt-0.5">${m.role} • ${m.phone}</p>
+            </div>
+            <div class="flex items-center space-x-2 space-x-reverse">
+              <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg font-medium">${m.status}</span>
+              ${this.currentUser.role === 'ایڈمن' ? `<button onclick="window.app.removeMember(${m.id})" class="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg">ڈیلیٹ</button>` : ''}
+            </div>
           </div>
-          <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg font-medium">${m.status}</span>
-        </div>
-      `).join('');
-    }
-  }
-
-  renderPayments() {
-    const cards = document.getElementById('payment-cards');
-    if (cards) {
-      cards.innerHTML = this.data.payments.map(p => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <span class="text-xs font-bold text-primary-600">${p.type}</span>
-          <h4 class="font-bold text-slate-800 text-sm mt-1">${p.title}</h4>
-          <p class="text-xs text-slate-500 mt-1">${p.detail}</p>
-        </div>
-      `).join('');
+        `).join('');
+      }
     }
   }
 }
