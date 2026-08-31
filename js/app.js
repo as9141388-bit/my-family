@@ -1,4 +1,4 @@
-// Initial Data Model (All reset to zero / clear for admin entry)
+// Initial Data Model
 const DEFAULT_DATA = {
   fundBalance: 0,
   totalReceived: 0,
@@ -88,11 +88,16 @@ class AppState {
       id: Date.now(),
       member: memberName,
       amount: parseFloat(amount),
-      type, // 'income' or 'expense'
-      status, // 'approved' or 'pending'
+      type,
+      status,
       date: date || new Date().toISOString().split('T')[0]
     };
     this.data.transactions.push(newTx);
+    this.saveData();
+  }
+
+  removeTransaction(id) {
+    this.data.transactions = this.data.transactions.filter(t => t.id !== id);
     this.saveData();
   }
 
@@ -164,17 +169,14 @@ class AppState {
   }
 
   renderDashboard() {
-    // Balances
     document.getElementById('fund-balance').textContent = `Rs ${this.data.fundBalance.toLocaleString()}`;
     document.getElementById('total-received').textContent = `Rs ${this.data.totalReceived.toLocaleString()}`;
     document.getElementById('total-pending').textContent = `Rs ${this.data.totalPending.toLocaleString()}`;
     document.getElementById('total-spent').textContent = `Rs ${this.data.totalSpent.toLocaleString()}`;
 
-    // Members Count
     const memCount = document.getElementById('members-count');
     if (memCount) memCount.textContent = this.data.members.length;
 
-    // Transaction History Table
     const txList = document.getElementById('recent-tx-list');
     if (txList) {
       if (this.data.transactions.length === 0) {
@@ -186,9 +188,12 @@ class AppState {
               <p class="font-bold text-slate-700">${tx.member} (${tx.type === 'expense' ? 'خرچ' : 'جمع'})</p>
               <p class="text-slate-400 mt-0.5">${tx.date} • <span class="${tx.status === 'approved' ? 'text-emerald-600' : 'text-amber-600'}">${tx.status === 'approved' ? 'منظور شدہ' : 'پینڈنگ'}</span></p>
             </div>
-            <span class="font-bold ${tx.type === 'expense' ? 'text-red-500' : 'text-emerald-600'}">
-              ${tx.type === 'expense' ? '-' : '+'}Rs ${tx.amount.toLocaleString()}
-            </span>
+            <div class="flex items-center space-x-3 space-x-reverse">
+              <span class="font-bold ${tx.type === 'expense' ? 'text-red-500' : 'text-emerald-600'}">
+                ${tx.type === 'expense' ? '-' : '+'}Rs ${tx.amount.toLocaleString()}
+              </span>
+              <button onclick="window.app.removeTransaction(${tx.id})" class="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg">ڈیلیٹ</button>
+            </div>
           </div>
         `).join('');
       }
@@ -209,7 +214,7 @@ class AppState {
             </div>
             <div class="flex items-center space-x-2 space-x-reverse">
               <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg font-medium">${m.status}</span>
-              ${this.currentUser.role === 'ایڈمن' ? `<button onclick="window.app.removeMember(${m.id})" class="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg">ڈیلیٹ</button>` : ''}
+              <button onclick="window.app.removeMember(${m.id})" class="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg">ڈیلیٹ</button>
             </div>
           </div>
         `).join('');
