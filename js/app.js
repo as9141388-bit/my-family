@@ -11,8 +11,8 @@ const DEFAULT_DATA = {
   transactions: [],
   familyTrees: [],
   accounts: [
-    { id: 1, type: 'Easypaisa', name: 'Easypaisa Mobile', accNumber: '03001234567', accTitle: 'Ismaili Foundation' },
-    { id: 2, type: 'JazzCash', name: 'JazzCash Mobile', accNumber: '03007654321', accTitle: 'Ismaili Foundation' }
+    { id: 1, type: 'Easypaisa', name: 'Easypaisa Mobile', accNumber: '03426965892', accTitle: 'Ismaili Foundation' },
+    { id: 2, type: 'JazzCash', name: 'JazzCash Mobile', accNumber: '03426965892', accTitle: 'Ismaili Foundation' }
   ]
 };
 
@@ -66,7 +66,6 @@ class AppState {
 
     this.data.registeredUsers.push(newUser);
     
-    // Auto Add to Members List
     this.data.members.push({
       id: newUser.id,
       name: fullname,
@@ -139,6 +138,21 @@ class AppState {
     if (this.currentUser?.role !== 'ایڈمن') return;
     this.data.accounts = this.data.accounts.filter(a => a.id !== id);
     this.saveData();
+  }
+
+  openWalletApp(type, accNumber) {
+    // Copy number to clipboard
+    navigator.clipboard.writeText(accNumber);
+
+    if (type === 'Easypaisa') {
+      alert(`نمبر (${accNumber}) کاپی ہو گیا ہے! ایزی پیسہ ایپ کھولی جا رہی ہے۔`);
+      window.location.href = 'easypaisa://';
+    } else if (type === 'JazzCash') {
+      alert(`نمبر (${accNumber}) کاپی ہو گیا ہے! جیز کیش ایپ کھولی جا رہی ہے۔`);
+      window.location.href = 'jazzcash://';
+    } else {
+      alert(`نمبر (${accNumber}) کاپی ہو گیا ہے! اپنے بینک کی ایپ سے ٹرانسفر کریں۔`);
+    }
   }
 
   addTransaction(memberName, amount, type, status, date, paymentMethod = 'Direct', trxId = '-') {
@@ -344,14 +358,20 @@ class AppState {
 
     if (grid) {
       grid.innerHTML = this.data.accounts.map(a => `
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-1">
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-xs font-bold px-2.5 py-1 rounded-full ${a.type === 'Easypaisa' ? 'bg-emerald-100 text-emerald-800' : a.type === 'JazzCash' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}">${a.type}</span>
             ${this.currentUser.role === 'ایڈمن' ? `<button onclick="window.app.removeAccount(${a.id})" class="text-xs text-red-500 hover:underline">حذف کریں</button>` : ''}
           </div>
-          <h4 class="font-bold text-slate-800 text-sm mt-2">${a.name}</h4>
-          <p class="text-xs text-slate-600">نمبر: <b class="text-slate-800 select-all">${a.accNumber}</b></p>
-          <p class="text-xs text-slate-600">عنوان (Title): <b>${a.accTitle}</b></p>
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm">${a.name}</h4>
+            <p class="text-xs text-slate-600">نمبر: <b class="text-slate-800 select-all">${a.accNumber}</b></p>
+            <p class="text-xs text-slate-600">عنوان (Title): <b>${a.accTitle}</b></p>
+          </div>
+          
+          <button onclick="window.app.openWalletApp('${a.type}', '${a.accNumber}')" class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 space-x-reverse shadow-sm">
+            <span>📲 ایپ کھولیں اور رقم بھیجیں</span>
+          </button>
         </div>
       `).join('');
     }
