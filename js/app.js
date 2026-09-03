@@ -3,8 +3,11 @@ const DEFAULT_DATA = {
   totalReceived: 0,
   totalPending: 0,
   totalSpent: 0,
-  lastUpdated: new Date().toISOString().split('T')[0],
   members: [],
+  registeredUsers: [
+    { username: 'admin', password: 'password', fullname: 'ایڈمن', role: 'ایڈمن', status: 'approved' },
+    { username: 'user', password: 'password', fullname: 'عام ممبر', role: 'عام ممبر', status: 'approved' }
+  ],
   transactions: [],
   familyTrees: [],
   accounts: [
@@ -17,7 +20,8 @@ class AppState {
   constructor() {
     this.currentUser = JSON.parse(sessionStorage.getItem('family_user')) || null;
     this.data = JSON.parse(localStorage.getItem('family_portal_data')) || DEFAULT_DATA;
-    if (!this.data.accounts) this.data.accounts = DEFAULT_DATA.accounts;
+    if (!this.data.registeredUsers) this.data.registeredUsers = DEFAULT_DATA.registeredUsers;
+    this.isRegistering = false;
     this.init();
   }
 
@@ -28,40 +32,78 @@ class AppState {
   }
 
   recalculateTotals() {
-    let received = 0;
-    let pending = 0;
-    let spent = 0;
-
+    let received = 0, pending = 0, spent = 0;
     this.data.transactions.forEach(tx => {
       const amt = parseFloat(tx.amount) || 0;
-      if (tx.type === 'expense') {
-        spent += amt;
-      } else if (tx.status === 'approved') {
-        received += amt;
-      } else if (tx.status === 'pending') {
-        pending += amt;
-      }
+      if (tx.type === 'expense') spent += amt;
+      else if (tx.status === 'approved') received += amt;
+      else if (tx.status === 'pending') pending += amt;
     });
-
     this.data.totalReceived = received;
     this.data.totalPending = pending;
     this.data.totalSpent = spent;
     this.data.fundBalance = received - spent;
   }
 
+  register(fullname, username, password, phone, type) {
+    const cleanUser = username.trim().toLowerCase();
+    const exists = this.data.registeredUsers.find(u => u.username.toLowerCase() === cleanUser);
+    
+    if (exists) {
+      alert('یہ یوزر نیم پہلے سے موجود ہے! دوسرا یوزر نیم چنیں۔');
+      return;
+    }
+
+    const newUser = {
+      id: Date.now(),
+      fullname,
+      username: cleanUser,
+      password: password.trim(),
+      phone,
+      role: type,
+      status: 'pending'
+    };
+
+    this.data.registeredUsers.push(newUser);
+    
+    // Auto Add to Members List
+    this.data.members.push({
+      id: newUser.id,
+      name: fullname,
+      role: type,
+      phone: phone,
+      status: 'غیر منظور شدہ'
+    });
+
+    this.saveData();
+    alert('آپ کی رجسٹریشن کی درخواست بھیج دی گئی ہے! ایڈمن کی منظوری کے بعد آپ لاگ ان کر سکیں گے۔');
+    this.toggleAuthMode(false);
+  }
+
   login(username, password) {
     const cleanUser = username.trim().toLowerCase();
     const cleanPass = password.trim();
 
-    if ((cleanUser === 'admin' || cleanUser === 'user') && cleanPass === 'password') {
-      this.currentUser = {
-        username: cleanUser,
-        role: cleanUser === 'admin' ? 'ایڈمن' : 'ممبر'
-      };
-      sessionStorage.setItem('family_user', JSON.stringify(this.currentUser));
-      return true;
+    const found = this.data.registeredUsers.find(u => u.username.toLowerCase() === cleanUser && u.password === cleanPass);
+
+    if (!found) {
+      alert('غلط یوزر نیم یا پاس ورڈ!');
+      return false;
     }
-    return false;
+
+    if (found.status === 'pending') {
+      alert('آپ کا اکاؤنٹ ابھی پینڈنگ میں ہے۔ ایڈمن سے منظوری کا انتظار کریں۔');
+      return false;
+    }
+
+    this.currentUser = {
+      username: found.username,
+      fullname: found.fullname,
+      role: found.username === 'admin' ? 'ایڈمن' : found.role
+    };
+
+    sessionStorage.setItem('family_user', JSON.stringify(this.currentUser));
+    return true;
   }
 
   logout() {
@@ -71,26 +113,19 @@ class AppState {
     this.render();
   }
 
-  addMember(name, role, phone, status = 'غیر منظور شدہ') {
-    const newMember = {
-      id: Date.now(),
-      name,
-      role,
-      phone,
-      status: this.currentUser?.role === 'ایڈمن' ? 'منظور شدہ' : status
-    };
-    this.data.members.push(newMember);
-    this.saveData();
-  }
-
   approveMember(id) {
     const m = this.data.members.find(mem => mem.id === id);
     if (m) m.status = 'منظور شدہ';
+
+    const u = this.data.registeredUsers.find(usr => usr.id === id || usr.fullname === m?.name);
+    if (u) u.status = 'approved';
+
     this.saveData();
   }
 
   removeMember(id) {
     this.data.members = this.data.members.filter(m => m.id !== id);
+    this.data.registeredUsers = this.data.registeredUsers.filter(u => u.id !== id);
     this.saveData();
   }
 
@@ -143,6 +178,29 @@ class AppState {
     this.saveData();
   }
 
+  toggleAuthMode(isReg) {
+    this.isRegistering = isReg;
+    const loginForm = document.getElementById('login-form');
+    const regForm = document.getElementById('register-form');
+    const title = document.getElementById('auth-subtitle');
+    const switchText = document.getElementById('auth-switch-text');
+    const toggleBtn = document.getElementById('toggle-auth-btn');
+
+    if (this.isRegistering) {
+      loginForm.classList.add('hidden');
+      regForm.classList.remove('hidden');
+      title.textContent = 'نیا اکاؤنٹ بنائیں (Registration)';
+      switchText.textContent = 'پہلے سے اکاؤنٹ موجود ہے؟';
+      toggleBtn.textContent = 'لاگ ان کریں (Sign In)';
+    } else {
+      loginForm.classList.remove('hidden');
+      regForm.classList.add('hidden');
+      title.textContent = 'محفوظ فیملی پورٹل میں لاگ ان کریں';
+      switchText.textContent = 'نیا اکاؤنٹ بنانا چاہتے ہیں؟';
+      toggleBtn.textContent = 'نیا اکاؤنٹ رجسٹر کریں (Sign Up)';
+    }
+  }
+
   init() {
     this.recalculateTotals();
     this.bindEvents();
@@ -151,25 +209,33 @@ class AppState {
   }
 
   bindEvents() {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const u = document.getElementById('login-username').value;
-        const p = document.getElementById('login-password').value;
-        if (this.login(u, p)) {
-          this.render();
-          window.location.hash = 'dashboard';
-        } else {
-          alert('غلط یوزر نیم یا پاس ورڈ!');
-        }
-      });
-    }
+    document.getElementById('toggle-auth-btn')?.addEventListener('click', () => {
+      this.toggleAuthMode(!this.isRegistering);
+    });
 
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => this.logout());
-    }
+    document.getElementById('login-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('login-username').value;
+      const p = document.getElementById('login-password').value;
+      if (this.login(u, p)) {
+        this.render();
+        window.location.hash = 'dashboard';
+      }
+    });
+
+    document.getElementById('register-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fullname = document.getElementById('reg-fullname').value;
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const phone = document.getElementById('reg-phone').value;
+      const type = document.getElementById('reg-type').value;
+
+      this.register(fullname, username, password, phone, type);
+      e.target.reset();
+    });
+
+    document.getElementById('logout-btn')?.addEventListener('click', () => this.logout());
   }
 
   handleRouting() {
@@ -178,11 +244,8 @@ class AppState {
     document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
     
     const targetPage = document.getElementById(`page-${hash}`);
-    if (targetPage) {
-      targetPage.classList.remove('hidden');
-    } else {
-      document.getElementById('page-dashboard')?.classList.remove('hidden');
-    }
+    if (targetPage) targetPage.classList.remove('hidden');
+    else document.getElementById('page-dashboard')?.classList.remove('hidden');
   }
 
   render() {
@@ -204,11 +267,34 @@ class AppState {
         }`;
       }
 
+      this.renderNotifications();
       this.renderDashboard();
       this.renderAccounts();
       this.renderMembers();
       this.renderTrees();
       this.handleRouting();
+    }
+  }
+
+  renderNotifications() {
+    const notifBox = document.getElementById('admin-notification');
+    const notifText = document.getElementById('notification-text');
+    const pendingBadge = document.getElementById('pending-members-count');
+
+    const pendingCount = this.data.registeredUsers.filter(u => u.status === 'pending').length;
+
+    if (this.currentUser.role === 'ایڈمن' && pendingCount > 0) {
+      if (notifBox && notifText) {
+        notifBox.classList.remove('hidden');
+        notifText.textContent = `🔔 نوٹیفکیشن: ${pendingCount} نئے ممبر(ز) رجسٹریشن کی منظوری کے منتظر ہیں! "فیملی ممبرز" کے ٹیب میں جا کر منظور کریں۔`;
+      }
+      if (pendingBadge) {
+        pendingBadge.classList.remove('hidden');
+        pendingBadge.textContent = pendingCount;
+      }
+    } else {
+      if (notifBox) notifBox.classList.add('hidden');
+      if (pendingBadge) pendingBadge.classList.add('hidden');
     }
   }
 
@@ -254,9 +340,7 @@ class AppState {
     const grid = document.getElementById('accounts-grid');
     const adminCard = document.getElementById('admin-add-account-card');
 
-    if (adminCard) {
-      adminCard.style.display = this.currentUser.role === 'ایڈمن' ? 'block' : 'none';
-    }
+    if (adminCard) adminCard.style.display = this.currentUser.role === 'ایڈمن' ? 'block' : 'none';
 
     if (grid) {
       grid.innerHTML = this.data.accounts.map(a => `
