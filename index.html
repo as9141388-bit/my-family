@@ -224,7 +224,56 @@
       </section>
     </main>
   </div>
+<!-- ڈونیشن کا بٹن -->
+<button class="donate-btn" onclick="openDonateModal()">ابھی ڈونیٹ کریں (Donate Now)</button>
 
+<!-- ڈونیشن پاپ اپ (Modal) -->
+<div id="donationModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeDonateModal()">&times;</span>
+    <h2>اسماعیلی فیملی فاؤنڈیشن - عطیہ / ڈونیشن</h2>
+    <p class="subtitle">آپ درج ذیل راست (Raast)، بینک یا ای والٹ کے ذریعے براہ راست ڈونیشن بھیج سکتے ہیں:</p>
+
+    <!-- راست / 1Link آپشن -->
+    <div class="payment-method">
+      <div class="method-header">
+        <strong>⚡ Raast (راست) - تمام پاکستانی بینکوں سے مفت ٹرانسفر</strong>
+      </div>
+      <div class="account-details">
+        <span>راست آئی ڈی / موبائل: <strong>03xxxxxxxxxx</strong></span>
+        <button class="copy-btn" onclick="copyToClipboard('03xxxxxxxxxx')">کاپی کریں</button>
+      </div>
+    </div>
+
+    <!-- بینک اکاؤنٹ ڈیٹیلز -->
+    <div class="payment-method">
+      <div class="method-header">
+        <strong>🏛️ بینک اکاؤنٹ (Bank Account Transfer)</strong>
+      </div>
+      <p class="bank-name">بینک کا نام: Meezan Bank / HBL / Faysal Bank</p>
+      <div class="account-details">
+        <span>اکاؤنٹ نمبر / IBAN: <strong>PKxxMEZN0000000000000000</strong></span>
+        <button class="copy-btn" onclick="copyToClipboard('PKxxMEZN0000000000000000')">کاپی کریں</button>
+      </div>
+      <p class="account-title">عنوان: Ismaili Family Foundation</p>
+    </div>
+
+    <!-- ای والٹس -->
+    <div class="payment-method">
+      <div class="method-header">
+        <strong>📱 Mobile Wallets (Easypaisa / JazzCash / SadaPay)</strong>
+      </div>
+      <div class="account-details">
+        <span>Easypaisa / JazzCash: <strong>03xxxxxxxxxx</strong></span>
+        <button class="copy-btn" onclick="copyToClipboard('03xxxxxxxxxx')">کاپی کریں</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <p>💡 <strong>طریقہ کار:</strong> اپنا اکاؤنٹ نمبر کاپی کریں اور اپنے موبائل کی بینکنگ یا والٹ ایپ کھول کر "Send Money" / "Raast Transfer" پر جا کر رقم منتقل کریں۔</p>
+    </div>
+  </div>
+</div>
   <script src="js/app.js"></script>
 </body>
 </html>
