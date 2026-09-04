@@ -27,16 +27,14 @@
       <option value="ur" selected>اردو</option>
       <option value="en">English</option>
     </select>
+<div class="settings-dropdown">
+  <button type="button" class="settings-btn" onclick="toggleSettingsMenu()" data-i18n="settings">⚙️ سیٹنگز</button>
+  <div id="settingsMenu" class="settings-menu">
+    <a href="#" onclick="openProfileModal(); return false;" data-i18n="edit_profile">👤 ایڈیٹ پروفائل (Edit Profile)</a>
+    <a href="#" onclick="toggleDarkMode(); return false;" data-i18n="dark_mode">🌙 ڈارک موڈ (Dark Mode)</a>
+    <a href="#" onclick="openDonateModal(); return false;" data-i18n="donate">💰 عطیہ / ڈونیشن</a>
   </div>
-
-  <!-- Settings Dropdown Button -->
-  <div class="settings-dropdown">
-    <button type="button" class="settings-btn" onclick="toggleSettingsMenu()">⚙️ سیٹنگز</button>
-    <div id="settingsMenu" class="settings-menu">
-      <a href="#" onclick="openProfileModal(); return false;">👤 ایڈیٹ پروفائل (Edit Profile)</a>
-      <a href="#" onclick="toggleDarkMode(); return false;">🌙 ڈارک موڈ (Dark Mode)</a>
-      <a href="#" onclick="openDonateModal(); return false;">💰 عطیہ / ڈونیشن</a>
-    </div>
+</div>
   </div>
 </div>
   <!-- AUTH SCREEN (LOGIN & REGISTER) -->
