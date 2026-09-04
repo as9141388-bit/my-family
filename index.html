@@ -18,7 +18,27 @@
   </script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen">
+<!-- Settings & Language Bar -->
+<div class="settings-container">
+  <!-- Language Selector -->
+  <div class="lang-selector">
+    <label for="languageSelect">🌐 زبان / Language:</label>
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="ur" selected>اردو</option>
+      <option value="en">English</option>
+    </select>
+  </div>
 
+  <!-- Settings Dropdown Button -->
+  <div class="settings-dropdown">
+    <button type="button" class="settings-btn" onclick="toggleSettingsMenu()">⚙️ سیٹنگز</button>
+    <div id="settingsMenu" class="settings-menu">
+      <a href="#" onclick="openProfileModal(); return false;">👤 ایڈیٹ پروفائل (Edit Profile)</a>
+      <a href="#" onclick="toggleDarkMode(); return false;">🌙 ڈارک موڈ (Dark Mode)</a>
+      <a href="#" onclick="openDonateModal(); return false;">💰 عطیہ / ڈونیشن</a>
+    </div>
+  </div>
+</div>
   <!-- AUTH SCREEN (LOGIN & REGISTER) -->
   <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
