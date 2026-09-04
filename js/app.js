@@ -538,3 +538,87 @@ function changeLanguage(lang) {
     document.documentElement.lang = "ur";
   }
 }
+// ==========================================
+// NEW FEATURES: LANGUAGE & PROFILE SETTINGS
+// ==========================================
+
+const translations = {
+  ur: {
+    portal_title: "فیملی پورٹل",
+    admin: "ایڈمن",
+    dashboard: "ڈیش بورڈ",
+    foundation_accounts: "فاؤنڈیشن اکاؤنٹس",
+    fund_transfer: "فنڈز ٹرانسفر",
+    family_members: "فیملی ممبرز",
+    family_tree: "شجرہ نسب",
+    settings: "سیٹنگز",
+    edit_profile: "ایڈیٹ پروفائل",
+    dark_mode: "ڈارک موڈ",
+    donate: "عطیہ / ڈونیشن"
+  },
+  en: {
+    portal_title: "Family Portal",
+    admin: "Admin",
+    dashboard: "Dashboard",
+    foundation_accounts: "Foundation Accounts",
+    fund_transfer: "Fund Transfer",
+    family_members: "Family Members",
+    family_tree: "Family Tree",
+    settings: "Settings",
+    edit_profile: "Edit Profile",
+    dark_mode: "Dark Mode",
+    donate: "Donate"
+  }
+};
+
+function changeLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  document.documentElement.dir = (lang === 'en') ? 'ltr' : 'rtl';
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (t[key]) {
+      element.innerText = t[key];
+    }
+  });
+
+  localStorage.setItem('selected_lang', lang);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const savedLang = localStorage.getItem('selected_lang') || 'ur';
+  const langSelect = document.getElementById("languageSelect");
+  if (langSelect) langSelect.value = savedLang;
+  changeLanguage(savedLang);
+});
+
+function openProfileModal() {
+  var pModal = document.getElementById("profileModal");
+  if (pModal) pModal.style.display = "block";
+}
+
+function closeProfileModal() {
+  var pModal = document.getElementById("profileModal");
+  if (pModal) pModal.style.display = "none";
+}
+
+function saveProfileSettings(event) {
+  event.preventDefault();
+  const user = document.getElementById("profUsername").value;
+  const pass = document.getElementById("profPassword").value;
+  const acc = document.getElementById("profAccount").value;
+
+  if (user) localStorage.setItem("user_name", user);
+  if (pass) localStorage.setItem("user_pass", pass);
+  if (acc) localStorage.setItem("user_acc", acc);
+
+  alert(document.documentElement.lang === 'en' ? "Profile Updated!" : "پروفائل معلومات محفوظ ہو گئیں!");
+  closeProfileModal();
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
