@@ -430,3 +430,29 @@ class AppState {
 document.addEventListener('DOMContentLoaded', () => {
   window.app = new AppState();
 });
+// Modal کھولنا
+function openDonateModal() {
+  document.getElementById("donationModal").style.display = "block";
+}
+
+// Modal بند کرنا
+function closeDonateModal() {
+  document.getElementById("donationModal").style.display = "none";
+}
+
+// نمبر کاپی کرنے کا فنکشن
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    alert("نمبر کاپی ہو گیا ہے: " + text);
+  }, function(err) {
+    console.error('کپی کرنے میں مسئلہ آیا: ', err);
+  });
+}
+
+// اگر صارف باہر کلک کرے تو پاپ اپ بند ہو جائے
+window.onclick = function(event) {
+  var modal = document.getElementById("donationModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
