@@ -492,3 +492,49 @@ window.addEventListener('click', function(e) {
     menu.style.display = 'none';
   }
 });
+// 1. Dark Mode Toggle
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
+// 2. Open Profile Modal
+function openProfileModal() {
+  var profModal = document.getElementById("profileModal");
+  if (profModal) {
+    profModal.style.display = "block";
+  } else {
+    alert("پروفائل فارم کا HTML کوڈ موجود نہیں ہے!");
+  }
+}
+
+// 3. Close Profile Modal
+function closeProfileModal() {
+  var profModal = document.getElementById("profileModal");
+  if (profModal) profModal.style.display = "none";
+}
+
+// 4. Save Profile Settings
+function saveProfileSettings(event) {
+  event.preventDefault();
+  var username = document.getElementById("profUsername")?.value;
+  var password = document.getElementById("profPassword")?.value;
+  var account = document.getElementById("profAccount")?.value;
+
+  if (username) localStorage.setItem("user_username", username);
+  if (password) localStorage.setItem("user_password", password);
+  if (account) localStorage.setItem("user_account", account);
+
+  alert("تبدیلیاں محفوظ ہو گئی ہیں!");
+  closeProfileModal();
+}
+
+// 5. Language Switcher
+function changeLanguage(lang) {
+  if (lang === "en") {
+    document.documentElement.dir = "ltr";
+    document.documentElement.lang = "en";
+  } else {
+    document.documentElement.dir = "rtl";
+    document.documentElement.lang = "ur";
+  }
+}
