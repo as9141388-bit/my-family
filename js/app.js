@@ -456,3 +456,39 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+// Settings Menu کھولنا اور بند کرنا
+function toggleSettingsMenu() {
+  var menu = document.getElementById("settingsMenu");
+  if (menu.style.display === "block") {
+    menu.style.display = "none";
+  } else {
+    menu.style.display = "block";
+  }
+}
+
+// Dark Mode آن / آف کرنا
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
+// Language تبدیل کرنے کا بنیادی فنکشن
+function changeLanguage(lang) {
+  if (lang === "en") {
+    document.documentElement.dir = "ltr";
+    document.documentElement.lang = "en";
+    alert("Language changed to English! (Text updates can be customized)");
+  } else {
+    document.documentElement.dir = "rtl";
+    document.documentElement.lang = "ur";
+    alert("زبان اردو میں تبدیل کر دی گئی ہے!");
+  }
+}
+
+// اگر صارف باہر کلک کرے تو سیٹنگز مینو بند ہو جائے
+window.addEventListener('click', function(e) {
+  var btn = document.querySelector('.settings-btn');
+  var menu = document.getElementById('settingsMenu');
+  if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
